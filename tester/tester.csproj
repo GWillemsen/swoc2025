@@ -15,5 +15,9 @@
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\swoq2025\swoq2025.csproj" />
+  </ItemGroup>
 
 </Project>

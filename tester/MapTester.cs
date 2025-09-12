@@ -1,0 +1,248 @@
+﻿namespace tester;
+
+using swoq2025;
+
+[TestClass]
+public sealed class MapTester
+{
+    [TestMethod]
+    public void EmptyMap()
+    {
+        Map map = new(4, 4);
+
+        for (int y = 0; y < map.Height; ++y)
+        {
+            for (int x = 0; x < map.Width; ++x)
+            {
+                Assert.AreEqual(TileType.Unknown, map[x, y].Type);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void MergeSingleMap()
+    {
+        Map map1 = new(5, 5);
+        Map map2 = new(3,
+        [
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Player },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+        ]);
+
+        map1.MergeMap(map2, 2, 2);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 0].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[2, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 1].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 2].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 2].Type);
+        Assert.AreEqual(TileType.Player, map1[2, 2].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 2].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 2].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[2, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 3].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 3].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 4].Type);
+    }
+
+    [TestMethod]
+    public void MergeTwoMaps()
+    {
+        Map map1 = new(5, 5);
+        Map map2 = new(3,
+        [
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Player },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+        ]);
+        Map map3 = new(3,
+        [
+            new() { Type = TileType.Exit },
+            new() { Type = TileType.Empty },
+            new() { Type = TileType.Empty },
+            new() { Type = TileType.Empty },
+            new() { Type = TileType.Player },
+            new() { Type = TileType.Empty },
+            new() { Type = TileType.Empty },
+            new() { Type = TileType.Empty },
+            new() { Type = TileType.Empty },
+        ]);
+
+        map1.MergeMap(map2, 2, 2);
+        map1.MergeMap(map3, 3, 3);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 0].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[2, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 1].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 2].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 2].Type);
+        Assert.AreEqual(TileType.Exit, map1[2, 2].Type);
+        Assert.AreEqual(TileType.Empty, map1[3, 2].Type);
+        Assert.AreEqual(TileType.Empty, map1[4, 2].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 3].Type);
+        Assert.AreEqual(TileType.Empty, map1[2, 3].Type);
+        Assert.AreEqual(TileType.Player, map1[3, 3].Type);
+        Assert.AreEqual(TileType.Empty, map1[4, 3].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 4].Type);
+        Assert.AreEqual(TileType.Empty, map1[2, 4].Type);
+        Assert.AreEqual(TileType.Empty, map1[3, 4].Type);
+        Assert.AreEqual(TileType.Empty, map1[4, 4].Type);
+    }
+
+    [TestMethod]
+    public void MergeMap_ColumnOutsideOriginalMap()
+    {
+        Map map1 = new(5, 5);
+        Map map2 = new(3,
+        [
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Player },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+        ]);
+
+        // Place map2 so its rightmost column is outside map1
+        map1.MergeMap(map2, 4, 2);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 0].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[4, 1].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 2].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 2].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 2].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 2].Type);
+        Assert.AreEqual(TileType.Player, map1[4, 2].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 3].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 3].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[4, 3].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 4].Type);
+    }
+
+    [TestMethod]
+    public void MergeMapsAndUnknownOverIt()
+    {
+        Map map1 = new(5, 5);
+        Map map2 = new(3,
+        [
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Player },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+        ]);
+        Map map3 = new(3,
+        [
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+            new() { Type = TileType.Unknown },
+        ]);
+
+        map1.MergeMap(map2, 2, 2);
+        map1.MergeMap(map3, 2, 2);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 0].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[2, 1].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 1].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 2].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 2].Type);
+        Assert.AreEqual(TileType.Player, map1[2, 2].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 2].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 2].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[1, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[2, 3].Type);
+        Assert.AreEqual(TileType.Wall, map1[3, 3].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 3].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[3, 4].Type);
+        Assert.AreEqual(TileType.Unknown, map1[4, 4].Type);
+    }
+}
