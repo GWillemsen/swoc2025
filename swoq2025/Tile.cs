@@ -5,5 +5,5 @@ namespace swoq2025;
 [DebuggerDisplay("{Type}")]
 public class Tile
 {
-    public TileType Type { get; set; } = TileType.Unknown;
+    public Swoq.Interface.Tile Type { get; set; } = Swoq.Interface.Tile.Unknown;
 }

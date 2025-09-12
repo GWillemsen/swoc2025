@@ -2,6 +2,8 @@
 
 using swoq2025;
 
+using TileType = Swoq.Interface.Tile;
+
 [TestClass]
 public sealed class MapTester
 {
