@@ -10,14 +10,7 @@ public class Map
 
     public int Height { get; }
 
-    public Tile this[int x, int y]
-    {
-        get
-        {
-            int index = (y * Width) + x;
-            return _tiles[index];
-        }
-    }
+    public Tile this[int x, int y] => _tiles[(y * Width) + x];
 
     public Map(int width, int height)
     {
@@ -40,6 +33,14 @@ public class Map
     public static Map FromState(int width, State state)
     {
         return new Map(width, state.PlayerState.Surroundings.Select(t => new Tile(t)));
+    }
+
+    public void Reset()
+    {
+        foreach (var tile in _tiles)
+        {
+            tile.Type = Swoq.Interface.Tile.Unknown;
+        }
     }
 
     public void MergeMap(Map other, int x, int y)

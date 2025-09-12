@@ -64,6 +64,37 @@ public sealed class MapTester
     }
 
     [TestMethod]
+    public void MapReset()
+    {
+        Map map1 = new(3,
+        [
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Player },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+            new() { Type = TileType.Wall },
+        ]);
+
+        map1.Reset();
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 0].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 0].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 1].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 1].Type);
+
+        Assert.AreEqual(TileType.Unknown, map1[0, 2].Type);
+        Assert.AreEqual(TileType.Unknown, map1[1, 2].Type);
+        Assert.AreEqual(TileType.Unknown, map1[2, 2].Type);
+    }
+
+    [TestMethod]
     public void MergeSingleMap()
     {
         Map map1 = new(5, 5);
