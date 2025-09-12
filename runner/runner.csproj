@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\swoq2025\swoq2025.csproj" />
+  </ItemGroup>
+
 </Project>
