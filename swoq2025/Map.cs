@@ -1,3 +1,5 @@
+using Swoq.Interface;
+
 namespace swoq2025;
 
 public class Map
@@ -33,6 +35,11 @@ public class Map
         Width = width;
         Height = tiles.Count() / width;
         _tiles = [.. tiles];
+    }
+
+    public static Map FromState(int width, State state)
+    {
+        return new Map(width, state.PlayerState.Surroundings.Select(t => new Tile(t)));
     }
 
     public void MergeMap(Map other, int x, int y)

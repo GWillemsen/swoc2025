@@ -6,4 +6,14 @@ namespace swoq2025;
 public class Tile
 {
     public Swoq.Interface.Tile Type { get; set; } = Swoq.Interface.Tile.Unknown;
+
+    public Tile()
+    {
+        Type = Swoq.Interface.Tile.Unknown;
+    }
+
+    public Tile(Swoq.Interface.Tile type)
+    {
+        Type = type;
+    }
 }
