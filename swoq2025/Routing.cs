@@ -11,45 +11,72 @@ public class Router
 
     public List<Coord> FindPath(Coord from, Coord target)
     {
-        var openSet = new PriorityQueue<Coord, int>();
-        var cameFrom = new Dictionary<Coord, Coord>();
-        var gScore = new Dictionary<Coord, int>();
-        var fScore = new Dictionary<Coord, int>();
+        int width = _map.Width;
+        int height = _map.Height;
+        int total = width * height;
 
-        gScore[from] = 0;
-        fScore[from] = Heuristic(from, target);
-        openSet.Enqueue(from, fScore[from]);
+        var openSet = new PriorityQueue<Coord, int>();
+        var openSetHash = new HashSet<Coord>();
+        var closedSet = new HashSet<Coord>();
+
+        // Arrays for fast access
+        var gScore = new int[total];
+        var fScore = new int[total];
+        var cameFrom = new Coord?[total];
+        for (int i = 0; i < total; ++i) { gScore[i] = int.MaxValue; fScore[i] = int.MaxValue; cameFrom[i] = null; }
+
+        int Index(Coord c) => c.Y * width + c.X;
+
+        gScore[Index(from)] = 0;
+        fScore[Index(from)] = Heuristic(from, target);
+        openSet.Enqueue(from, fScore[Index(from)]);
+        openSetHash.Add(from);
 
         while (openSet.Count > 0)
         {
             var current = openSet.Dequeue();
+            openSetHash.Remove(current);
 
             if (current.Equals(target))
             {
                 var path = new List<Coord>();
-                while (cameFrom.ContainsKey(current))
+                int idx = Index(current);
+                while (cameFrom[idx].HasValue)
                 {
                     path.Add(current);
-                    current = cameFrom[current];
+                    current = cameFrom[idx].Value;
+                    idx = Index(current);
                 }
                 path.Reverse();
                 return path;
             }
 
+            closedSet.Add(current);
+
             foreach (var neighbor in GetNeighbors(current))
             {
-                if (IsBlocked(neighbor.X, neighbor.Y) && !neighbor.Equals(target))
-                    continue;
+                int nIdx = Index(neighbor);
+                if (closedSet.Contains(neighbor)) continue;
+                if (IsBlocked(neighbor.X, neighbor.Y) && !neighbor.Equals(target)) continue;
 
-                int tentativeGScore = gScore[current] + 1;
-                if (!gScore.ContainsKey(neighbor) || tentativeGScore < gScore[neighbor])
+                int tentativeGScore = gScore[Index(current)] + 1;
+                if (tentativeGScore < gScore[nIdx])
                 {
-                    cameFrom[neighbor] = current;
-                    gScore[neighbor] = tentativeGScore;
-                    fScore[neighbor] = tentativeGScore + Heuristic(neighbor, target);
-                    if (!openSet.UnorderedItems.Any(x => x.Element.Equals(neighbor)))
-                        openSet.Enqueue(neighbor, fScore[neighbor]);
+                    cameFrom[nIdx] = current;
+                    gScore[nIdx] = tentativeGScore;
+                    fScore[nIdx] = tentativeGScore + Heuristic(neighbor, target);
+                    if (!openSetHash.Contains(neighbor))
+                    {
+                        openSet.Enqueue(neighbor, fScore[nIdx]);
+                        openSetHash.Add(neighbor);
+                    }
                 }
+            }
+
+            // Early exit: if openSet is very large, assume target is unreachable
+            if (openSet.Count > 2000) // tune this threshold as needed
+            {
+                return [];
             }
         }
 

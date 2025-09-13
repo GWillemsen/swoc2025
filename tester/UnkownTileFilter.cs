@@ -102,8 +102,8 @@ public sealed class UnknownTileFilterTests
 
         Assert.AreEqual(5, unknownTiles.Count);
         Assert.AreEqual(new Coord(0, 1), unknownTiles[0]);
-        Assert.AreEqual(new Coord(0, 2), unknownTiles[1]);
-        Assert.AreEqual(new Coord(2, 1), unknownTiles[2]);
+        Assert.AreEqual(new Coord(2, 1), unknownTiles[1]);
+        Assert.AreEqual(new Coord(0, 2), unknownTiles[2]);
         Assert.AreEqual(new Coord(2, 2), unknownTiles[3]);
         Assert.AreEqual(new Coord(1, 3), unknownTiles[4]);
     }
