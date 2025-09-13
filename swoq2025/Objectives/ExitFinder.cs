@@ -7,7 +7,7 @@ public class ExitFinder : IObjective
     private readonly Router router;
     private Coord? exit;
 
-    public bool IsCompleted => false; // Never completed, we always want to find the exit
+    public bool IsCompleted => exit.HasValue && !map.Any(t => t.Type == Swoq.Interface.Tile.Exit);
 
     public bool CanBeSolved => map.Any(t => t.Type == Swoq.Interface.Tile.Exit);
 
@@ -44,6 +44,7 @@ public class ExitFinder : IObjective
                 }
             }
         }
+        Console.WriteLine(map.Dump());
 
         if (exit.HasValue)
         {

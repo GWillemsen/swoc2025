@@ -100,15 +100,46 @@ public class Map : IEnumerable<Tile>
             builder.Append($"{y}".ToString().PadLeft(3, ' '));
             for (int x = 0; x < Width; ++x)
             {
-                char c = this[x, y].Type switch
+                char c;
+                switch (this[x, y].Type)
                 {
-                    Swoq.Interface.Tile.Unknown => '?',
-                    Swoq.Interface.Tile.Empty => '.',
-                    Swoq.Interface.Tile.Wall => '#',
-                    Swoq.Interface.Tile.Player => 'P',
-                    Swoq.Interface.Tile.Exit => 'E',
-                    _ => ' ',
-                };
+                    case Swoq.Interface.Tile.Unknown:
+                        c = '?';
+                        break;
+                    case Swoq.Interface.Tile.Empty:
+                        c = '.';
+                        break;
+                    case Swoq.Interface.Tile.Wall:
+                        c = '#';
+                        break;
+                    case Swoq.Interface.Tile.Player:
+                        c = 'P';
+                        break;
+                    case Swoq.Interface.Tile.Exit:
+                        c = 'E';
+                        break;
+                    case Swoq.Interface.Tile.DoorBlue:
+                        c = 'B';
+                        break;
+                    case Swoq.Interface.Tile.DoorGreen:
+                        c = 'G';
+                        break;
+                    case Swoq.Interface.Tile.DoorRed:
+                        c = 'R';
+                        break;
+                    case Swoq.Interface.Tile.KeyBlue:
+                        c = 'b';
+                        break;
+                    case Swoq.Interface.Tile.KeyGreen:
+                        c = 'g';
+                        break;
+                    case Swoq.Interface.Tile.KeyRed:
+                        c = 'r';
+                        break;
+                    default:
+                        c = ' ';
+                        break;
+                }
                 builder.Append(c.ToString().PadLeft(3, ' '));
             }
             builder.AppendLine();
