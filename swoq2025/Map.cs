@@ -1,9 +1,10 @@
+using System.Collections;
 using System.Text;
 using Swoq.Interface;
 
 namespace swoq2025;
 
-public class Map
+public class Map : IEnumerable<Tile>
 {
     private readonly List<Tile> _tiles = [];
     private List<bool> _updatedTiles = [];
@@ -113,5 +114,15 @@ public class Map
             builder.AppendLine();
         }
         return builder.ToString();
+    }
+
+    public IEnumerator<Tile> GetEnumerator()
+    {
+        return _tiles.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

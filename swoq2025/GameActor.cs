@@ -1,5 +1,5 @@
-using System.Drawing;
 using Swoq.Interface;
+using swoq2025.Objectives;
 
 namespace swoq2025;
 
@@ -9,13 +9,14 @@ public class GameActor
     private readonly Router router;
     private Coord? target = null;
 
-    private readonly MapExplorer explorer;
+    private readonly List<IObjective> objectives = [];
 
     public GameActor(Game game)
     {
         this.game = game;
         router = new Router(game.Map);
-        explorer = new MapExplorer(game.Map, game);
+        objectives.Add(new MapExplorer(game.Map, game.Player));
+        objectives.Add(new ExitFinder(game.Map, game.Player));
     }
 
     public void UpdateState(State state)
@@ -25,6 +26,10 @@ public class GameActor
         if (game.Level != state.Level)
         {
             game.Map.Reset();
+            foreach (var obj in objectives)
+            {
+                obj.Reset();
+            }
         }
 
         Console.WriteLine("-");
@@ -38,21 +43,26 @@ public class GameActor
 
     public DirectedAction GetAction()
     {
-        Coord? exit = getExit();
+        var objectivesByPriority = objectives
+            .Where(o => o.CanBeSolved || o.HasToBeSolved)
+            .Where(o => !o.IsCompleted)
+            .OrderBy(o => o.Priority);
+
         Coord next;
-        if (exit != null)
+        if (objectivesByPriority.Any())
         {
-            target = exit;
-            var path = router.FindPath(game.Player.Position, target.Value);
-            next = path.First();
+            var objective = objectivesByPriority.First();
+            if (!objective.TryGetNextTarget(out next))
+            {
+                Console.WriteLine("Objective cannot be solved");
+                return DirectedAction.None;
+            }
+            target = next;
         }
         else
         {
-            if (!explorer.TryGetNextTarget(out next))
-            {
-                Console.WriteLine("No more unknown tiles");
-                next = game.Player.Position;
-            }
+            Console.WriteLine("No objective to solve");
+            return DirectedAction.None;
         }
 
         return GetDirectionToTarget(next);
@@ -73,20 +83,5 @@ public class GameActor
             action = dy > 0 ? DirectedAction.MoveSouth : DirectedAction.MoveNorth;
         }
         return action;
-    }
-
-    private Coord? getExit()
-    {
-        for (int y = 0; y < game.Map.Height; ++y)
-        {
-            for (int x = 0; x < game.Map.Width; ++x)
-            {
-                if (game.Map[x, y].Type == Swoq.Interface.Tile.Exit)
-                {
-                    return new Coord(x, y);
-                }
-            }
-        }
-        return null;
     }
 }

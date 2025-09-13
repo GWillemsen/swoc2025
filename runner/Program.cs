@@ -9,13 +9,14 @@ string host = Environment.GetEnvironmentVariable("SWOQ_HOST") ?? throw new Argum
 
 var connection = new GameConnection(userId, userName, host);
 
-(StartResponse startResponse, GameService.GameServiceClient client) = await connection.StartAsync();  //1, 1659508268);
+(StartResponse startResponse, GameService.GameServiceClient client) = await connection.StartAsync();  //1, 1464998052);  //1, 1659508268);
 Game game = new(
     startResponse.GameId,
     new Map(startResponse.MapWidth, startResponse.MapHeight),
     startResponse.Seed,
     startResponse.VisibilityRange
 );
+Console.WriteLine($"Game ID: {game.Id}, Seed: {game.Seed}, View Distance: {game.ViewDistance}");
 GameActor actor = new(game);
 
 actor.UpdateState(startResponse.State);
