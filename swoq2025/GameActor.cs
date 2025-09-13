@@ -17,6 +17,9 @@ public class GameActor
         router = new Router(game.Map);
         objectives.Add(new MapExplorer(game.Map, game.Player));
         objectives.Add(new ExitFinder(game.Map, game.Player));
+        objectives.Add(new DoorSolver(game.Map, game.Player, Swoq.Interface.Tile.DoorRed, Swoq.Interface.Tile.KeyRed));
+        objectives.Add(new DoorSolver(game.Map, game.Player, Swoq.Interface.Tile.DoorBlue, Swoq.Interface.Tile.KeyBlue));
+        objectives.Add(new DoorSolver(game.Map, game.Player, Swoq.Interface.Tile.DoorGreen, Swoq.Interface.Tile.KeyGreen));
     }
 
     public void UpdateState(State state)
@@ -31,8 +34,6 @@ public class GameActor
                 obj.Reset();
             }
         }
-
-        Console.WriteLine("-");
         game.Player.Position = new Coord(state.PlayerState.Position.X, state.PlayerState.Position.Y);
         game.Player.Inventory = state.PlayerState.Inventory;
         game.Map.MergeMap(newMap, game.Player.Position.X, game.Player.Position.Y);
@@ -46,27 +47,38 @@ public class GameActor
         var objectivesByPriority = objectives
             .Where(o => o.CanBeSolved || o.HasToBeSolved)
             .Where(o => !o.IsCompleted)
-            .OrderBy(o => o.Priority);
+            .OrderByDescending(o => o.Priority)
+            .ToList();
 
-        Coord next;
+        Coord? next = null;
         bool useAction = false;
-        if (objectivesByPriority.Any())
+        if (objectivesByPriority.Count > 0)
         {
-            var objective = objectivesByPriority.First();
-            if (!objective.TryGetNextTarget(out next, out useAction))
+            foreach (var solver in objectivesByPriority)
             {
-                Console.WriteLine("Objective cannot be solved");
-                return DirectedAction.None;
+                if (!solver.TryGetNextTarget(out Coord newNext, out useAction))
+                {
+                    Console.WriteLine("Objective cannot solve. Skipping.");
+                    continue;
+                }
+                else
+                {
+                    target = newNext;
+                    next = newNext;
+                    break;
+                }
             }
-            target = next;
+        }
+
+        if (next.HasValue)
+        {
+            return GetDirectionToTarget(next.Value, useAction);
         }
         else
         {
             Console.WriteLine("No objective to solve");
             return DirectedAction.None;
         }
-
-        return GetDirectionToTarget(next, useAction);
     }
 
     private DirectedAction GetDirectionToTarget(Coord target, bool use)

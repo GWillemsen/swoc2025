@@ -15,6 +15,8 @@ public class Map : IEnumerable<Tile>
 
     public Tile this[int x, int y] => _tiles[(y * Width) + x];
 
+    public Tile this[Coord pos] => _tiles[(pos.Y * Width) + pos.X];
+
     public bool WasUpdated(int x, int y) => _updatedTiles[(y * Width) + x];
 
     public Map(int width, int height)
