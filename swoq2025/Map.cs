@@ -75,7 +75,7 @@ public class Map
                 Tile otherTile = other[nX, nY];
                 int idx = (tY * Width) + tX;
 
-                if (otherTile.Type != Swoq.Interface.Tile.Unknown)
+                if (otherTile.Type != Swoq.Interface.Tile.Unknown && otherTile.Type != this[tX, tY].Type)
                 {
                     this[tX, tY].Type = otherTile.Type;
                     _updatedTiles[idx] = true;
@@ -84,78 +84,31 @@ public class Map
         }
     }
 
-    public List<Coord> FindPath(int startX, int startY, int endX, int endY)
+    public void Dump()
     {
-        var openSet = new SortedSet<(int, int, Coord)>(Comparer<(int, int, Coord)>.Create((a, b) => a.Item1 != b.Item1 ? a.Item1 - b.Item1 : a.Item2 - b.Item2));
-        var cameFrom = new Dictionary<Coord, Coord>();
-        var gScore = new Dictionary<Coord, int>();
-        var hScore = new Dictionary<Coord, int>();
-        var closedSet = new HashSet<Coord>();
-
-        Coord start = new(startX, startY);
-        Coord end = new(endX, endY);
-
-        gScore[start] = 0;
-        hScore[start] = Heuristic(start, end);
-        openSet.Add((hScore[start], hScore[start], start));
-
-        while (openSet.Count > 0)
+        Console.Write("   ");
+        for (int x = 0; x < Width; ++x)
         {
-            var current = openSet.Min.Item3;
-            if (current.X == end.X && current.Y == end.Y)
-                return ReconstructPath(cameFrom, current);
-
-            openSet.Remove(openSet.Min);
-            closedSet.Add(current);
-
-            foreach (var neighbor in GetNeighbors(current))
+            Console.Write($"{x}".ToString().PadLeft(3, ' '));
+        }
+        Console.WriteLine();
+        for (int y = 0; y < Height; ++y)
+        {
+            Console.Write($"{y}".ToString().PadLeft(3, ' '));
+            for (int x = 0; x < Width; ++x)
             {
-                if (closedSet.Contains(neighbor) || IsBlocked(neighbor.X, neighbor.Y))
-                    continue;
-
-                int tentativeG = gScore[current] + 1;
-                if (!gScore.ContainsKey(neighbor) || tentativeG < gScore[neighbor])
+                char c = this[x, y].Type switch
                 {
-                    cameFrom[neighbor] = current;
-                    gScore[neighbor] = tentativeG;
-                    hScore[neighbor] = Heuristic(neighbor, end);
-                    openSet.Add((gScore[neighbor] + hScore[neighbor], hScore[neighbor], neighbor));
-                }
+                    Swoq.Interface.Tile.Unknown => '?',
+                    Swoq.Interface.Tile.Empty => '.',
+                    Swoq.Interface.Tile.Wall => '#',
+                    Swoq.Interface.Tile.Player => 'P',
+                    Swoq.Interface.Tile.Exit => 'E',
+                    _ => ' ',
+                };
+                Console.Write(c.ToString().PadLeft(3, ' '));
             }
+            Console.WriteLine();
         }
-        return new List<Coord>();
-    }
-
-    private int Heuristic(Coord a, Coord b) => Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-
-    private List<Coord> ReconstructPath(Dictionary<Coord, Coord> cameFrom, Coord current)
-    {
-        var path = new List<Coord> { current };
-        while (cameFrom.ContainsKey(current))
-        {
-            current = cameFrom[current];
-            path.Add(current);
-        }
-        path.Reverse();
-        return path;
-    }
-
-    private IEnumerable<Coord> GetNeighbors(Coord c)
-    {
-        int[] dx = { 0, 1, 0, -1 };
-        int[] dy = { -1, 0, 1, 0 };
-        for (int i = 0; i < 4; ++i)
-        {
-            int nx = c.X + dx[i];
-            int ny = c.Y + dy[i];
-            if (nx >= 0 && nx < Width && ny >= 0 && ny < Height)
-                yield return new Coord(nx, ny);
-        }
-    }
-
-    private bool IsBlocked(int x, int y)
-    {
-        var type = this[x, y].Type;
-        return type == Swoq.Interface.Tile.Wall || type == Swoq.Interface.Tile.Exit || type == Swoq.Interface.Tile.Player;
     }
 }
