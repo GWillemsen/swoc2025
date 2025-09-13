@@ -85,8 +85,7 @@ public class Router
 
     private int Heuristic(Coord a, Coord b)
     {
-        // Manhattan distance
-        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+        return a.ManhattanDistance(b);
     }
 
     private IEnumerable<Coord> GetNeighbors(Coord coord)

@@ -58,7 +58,6 @@ public class GameActor
             {
                 if (!solver.TryGetNextTarget(out Coord newNext, out useAction))
                 {
-                    Console.WriteLine("Objective cannot solve. Skipping.");
                     continue;
                 }
                 else

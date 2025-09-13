@@ -45,7 +45,6 @@ public class ExitFinder : IObjective
                 }
             }
         }
-        Console.WriteLine(map.Dump());
 
         if (exit.HasValue)
         {

@@ -3,16 +3,10 @@ using System.Diagnostics;
 namespace swoq2025;
 
 [DebuggerDisplay("({X}, {Y})")]
-public struct Coord : IEquatable<Coord>
+public struct Coord(int x, int y) : IEquatable<Coord>
 {
-    public int X;
-    public int Y;
-
-    public Coord(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
+    public int X = x;
+    public int Y = y;
 
     public override string ToString()
     {

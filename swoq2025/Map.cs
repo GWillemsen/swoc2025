@@ -7,7 +7,7 @@ namespace swoq2025;
 public class Map : IEnumerable<Tile>
 {
     private readonly List<Tile> _tiles = [];
-    private List<bool> _updatedTiles = [];
+    private readonly List<bool> _updatedTiles = [];
 
     public int Width { get; }
 
