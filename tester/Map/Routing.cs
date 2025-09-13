@@ -109,4 +109,37 @@ public sealed class Router
         var path = router.FindPath(new Coord(0, 0), new Coord(0, 3));
         Assert.AreEqual(0, path.Count, "Path should not be found through player or exit");
     }
+
+    [TestMethod]
+    public void SimpleSquareWallWithExit()
+    {
+        var largeMap = new Map(6, 6);
+        largeMap[0, 1].Type = TileType.Wall;
+        largeMap[0, 2].Type = TileType.Wall;
+        largeMap[0, 3].Type = TileType.Wall;
+        largeMap[0, 4].Type = TileType.Wall;
+
+        largeMap[1, 0].Type = TileType.Wall;
+        largeMap[2, 0].Type = TileType.Wall;
+        largeMap[3, 0].Type = TileType.Wall;
+        largeMap[4, 0].Type = TileType.Wall;
+
+        largeMap[5, 1].Type = TileType.Wall;
+        largeMap[5, 2].Type = TileType.Wall;
+        largeMap[5, 3].Type = TileType.Wall;
+        largeMap[5, 4].Type = TileType.Exit;
+
+        largeMap[1, 5].Type = TileType.Wall;
+        largeMap[2, 5].Type = TileType.Wall;
+        largeMap[3, 5].Type = TileType.Wall;
+        largeMap[4, 5].Type = TileType.Wall;
+
+        largeMap[2, 4].Type = TileType.Player;
+
+        var router = new swoq2025.Router(largeMap);
+
+        var path = router.FindPath(new Coord(2, 4), new Coord(4, 5));
+        
+        Assert.AreEqual(3, path.Count);
+    }
 }

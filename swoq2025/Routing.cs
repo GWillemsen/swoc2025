@@ -38,7 +38,7 @@ public class Router
 
             foreach (var neighbor in GetNeighbors(current))
             {
-                if (IsBlocked(neighbor.X, neighbor.Y))
+                if (IsBlocked(neighbor.X, neighbor.Y) && !neighbor.Equals(target))
                     continue;
 
                 int tentativeGScore = gScore[current] + 1;
