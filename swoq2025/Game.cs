@@ -11,7 +11,7 @@ public class Game
 
     public Map Map { get; }
 
-    public Point PlayerPosition { get; set; } = new(0, 0);
+    public Coord PlayerPosition { get; set; } = new(0, 0);
 
     public int ViewDistance { get; }
 

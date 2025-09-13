@@ -9,7 +9,7 @@ string host = Environment.GetEnvironmentVariable("SWOQ_HOST") ?? throw new Argum
 
 var connection = new GameConnection(userId, userName, host);
 
-(StartResponse startResponse, GameService.GameServiceClient client) = await connection.StartAsync();
+(StartResponse startResponse, GameService.GameServiceClient client) = await connection.StartAsync();  //1, 1659508268);
 Game game = new(
     startResponse.GameId,
     new Map(startResponse.MapWidth, startResponse.MapHeight),
@@ -18,10 +18,18 @@ Game game = new(
 );
 GameActor actor = new(game);
 
+actor.UpdateState(startResponse.State);
+
 while (game.Status == GameStatus.Active)
 {
     var action = actor.GetAction();
     Console.WriteLine($"tick: {game.Tick}, action: {action}");
+
+    if (action == DirectedAction.None)
+    {
+        Console.WriteLine("No action possible, stopping.");
+        break;
+    }
 
     var request = new ActRequest()
     {

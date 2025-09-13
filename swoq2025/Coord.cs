@@ -38,4 +38,14 @@ public struct Coord : IEquatable<Coord>
     {
         return !(left == right);
     }
+
+    public bool IsNeighbor(Coord test)
+    {
+        return Math.Abs(X - test.X) == 1 || Math.Abs(Y - test.Y) == 1;
+    }
+
+    public int ManhattanDistance(Coord other)
+    {
+        return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
+    }
 }

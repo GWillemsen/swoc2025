@@ -1,3 +1,4 @@
+using System.Text;
 using Swoq.Interface;
 
 namespace swoq2025;
@@ -84,17 +85,18 @@ public class Map
         }
     }
 
-    public void Dump()
+    public string Dump()
     {
-        Console.Write("   ");
+        StringBuilder builder = new();
+        builder.Append("   ");
         for (int x = 0; x < Width; ++x)
         {
-            Console.Write($"{x}".ToString().PadLeft(3, ' '));
+            builder.Append($"{x}".ToString().PadLeft(3, ' '));
         }
-        Console.WriteLine();
+        builder.AppendLine();
         for (int y = 0; y < Height; ++y)
         {
-            Console.Write($"{y}".ToString().PadLeft(3, ' '));
+            builder.Append($"{y}".ToString().PadLeft(3, ' '));
             for (int x = 0; x < Width; ++x)
             {
                 char c = this[x, y].Type switch
@@ -106,9 +108,10 @@ public class Map
                     Swoq.Interface.Tile.Exit => 'E',
                     _ => ' ',
                 };
-                Console.Write(c.ToString().PadLeft(3, ' '));
+                builder.Append(c.ToString().PadLeft(3, ' '));
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
+        return builder.ToString();
     }
 }
