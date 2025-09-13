@@ -27,13 +27,11 @@ public class UnknownTileFilter
         }
 
         // Sort by distance to player
-        tiles.Sort((a, b) =>
-        {
-            int distA = Math.Abs(a.X) + Math.Abs(a.Y);
-            int distB = Math.Abs(b.X) + Math.Abs(b.Y);
+        tiles.Sort((a, b) => {
+            int distA = Math.Abs(a.X - playerPosition.X) + Math.Abs(a.Y - playerPosition.Y);
+            int distB = Math.Abs(b.X - playerPosition.X) + Math.Abs(b.Y - playerPosition.Y);
             return distA.CompareTo(distB);
         });
-
 
         tiles = tiles.Where(i => router.FindPath(playerPosition, i).Count > 0).ToList();
 
