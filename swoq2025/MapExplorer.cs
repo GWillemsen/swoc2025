@@ -21,7 +21,7 @@ public class MapExplorer
         nextTarget = new(0, 0);
         if (target.HasValue)
         {
-            if (!game.PlayerPosition.IsNeighbor(target.Value))
+            if (!game.Player.Position.IsNeighbor(target.Value))
             {
                 targetPath = [];
             }
@@ -43,7 +43,7 @@ public class MapExplorer
         if (tiles.Count != 0)
         {
             target = tiles.First();
-            targetPath = router.FindPath(game.PlayerPosition, target.Value);
+            targetPath = router.FindPath(game.Player.Position, target.Value);
             if (targetPath.Count > 0)
             {
                 nextTarget = targetPath[0];
@@ -92,8 +92,8 @@ public class MapExplorer
 
         tiles.Sort((a, b) =>
         {
-            int distA = a.ManhattanDistance(game.PlayerPosition);
-            int distB = b.ManhattanDistance(game.PlayerPosition);
+            int distA = a.ManhattanDistance(game.Player.Position);
+            int distB = b.ManhattanDistance(game.Player.Position);
             return distA.CompareTo(distB);
         });
 

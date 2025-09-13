@@ -28,8 +28,9 @@ public class GameActor
         }
 
         Console.WriteLine("-");
-        game.PlayerPosition = new Coord(state.PlayerState.Position.X, state.PlayerState.Position.Y);
-        game.Map.MergeMap(newMap, game.PlayerPosition.X, game.PlayerPosition.Y);
+        game.Player.Position = new Coord(state.PlayerState.Position.X, state.PlayerState.Position.Y);
+        game.Player.Inventory = state.PlayerState.Inventory;
+        game.Map.MergeMap(newMap, game.Player.Position.X, game.Player.Position.Y);
         game.Status = state.Status;
         game.Level = state.Level;
         game.Tick = state.Tick;
@@ -42,7 +43,7 @@ public class GameActor
         if (exit != null)
         {
             target = exit;
-            var path = router.FindPath(game.PlayerPosition, target.Value);
+            var path = router.FindPath(game.Player.Position, target.Value);
             next = path.First();
         }
         else
@@ -50,7 +51,7 @@ public class GameActor
             if (!explorer.TryGetNextTarget(out next))
             {
                 Console.WriteLine("No more unknown tiles");
-                next = game.PlayerPosition;
+                next = game.Player.Position;
             }
         }
 
@@ -60,8 +61,8 @@ public class GameActor
     private DirectedAction GetDirectionToTarget(Coord target)
     {
         DirectedAction action = DirectedAction.None;
-        var dx = target.X - game.PlayerPosition.X;
-        var dy = target.Y - game.PlayerPosition.Y;
+        var dx = target.X - game.Player.Position.X;
+        var dy = target.Y - game.Player.Position.Y;
 
         if (Math.Abs(dx) > Math.Abs(dy))
         {

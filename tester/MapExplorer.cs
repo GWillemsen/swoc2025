@@ -14,7 +14,7 @@ public sealed class MapExplorer
         Map map = new(3, 3);
         Game game = new("", map, null, 3)
         {
-            PlayerPosition = new(1, 1)
+            Player = new(new(1, 1), Inventory.None)
         };
         map[0, 0].Type = TileType.Wall;
         map[1, 0].Type = TileType.Wall;
@@ -38,7 +38,7 @@ public sealed class MapExplorer
         Map map = new(3, 3);
         Game game = new("", map, null, 3)
         {
-            PlayerPosition = new(0, 1)
+            Player = new(new(0, 1), Inventory.None)
         };
         map[0, 0].Type = TileType.Wall;
         map[1, 0].Type = TileType.Wall;
@@ -64,7 +64,7 @@ public sealed class MapExplorer
         Map map = new(4, 4);
         Game game = new("", map, null, 3)
         {
-            PlayerPosition = new(1, 1)
+            Player = new(new(1, 1), Inventory.None)
         };
         map[0, 0].Type = TileType.Empty;
         map[1, 0].Type = TileType.Empty;
@@ -96,7 +96,7 @@ public sealed class MapExplorer
         Map map = new(4, 4);
         Game game = new("", map, null, 3)
         {
-            PlayerPosition = new(1, 1)
+            Player = new(new(1, 1), Inventory.None)
         };
         map[0, 0].Type = TileType.Empty;
         map[1, 0].Type = TileType.Empty;
@@ -122,22 +122,22 @@ public sealed class MapExplorer
         Assert.IsTrue(explorer.TryGetNextTarget(out Coord next));
         Assert.AreEqual(2, next.X);
         Assert.AreEqual(1, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(3, next.X);
         Assert.AreEqual(1, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(3, next.X);
         Assert.AreEqual(2, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(3, next.X);
         Assert.AreEqual(3, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsFalse(explorer.TryGetNextTarget(out next));
     }
@@ -148,7 +148,7 @@ public sealed class MapExplorer
         Map map = new(4, 4);
         Game game = new("", map, null, 3)
         {
-            PlayerPosition = new(0, 0)
+            Player = new(new(0, 0), Inventory.None)
         };
         map[0, 0].Type = TileType.Player;
         map[1, 0].Type = TileType.Empty;
@@ -174,22 +174,22 @@ public sealed class MapExplorer
         Assert.IsTrue(explorer.TryGetNextTarget(out Coord next));
         Assert.AreEqual(0, next.X);
         Assert.AreEqual(1, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(1, next.X);
         Assert.AreEqual(1, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(1, next.X);
         Assert.AreEqual(2, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(1, next.X);
         Assert.AreEqual(3, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         Map map1 = new(1, [
             new() { Type = TileType.Empty },
@@ -199,17 +199,15 @@ public sealed class MapExplorer
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(1, next.X);
         Assert.AreEqual(2, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
         
         Assert.IsTrue(explorer.TryGetNextTarget(out next));
         Assert.AreEqual(2, next.X);
         Assert.AreEqual(2, next.Y);
-        game.PlayerPosition = next;
+        game.Player.Position = next;
 
         map.MergeMap(map1, 3, 3);
 
         Assert.IsFalse(explorer.TryGetNextTarget(out next));
     }
-
-
 }

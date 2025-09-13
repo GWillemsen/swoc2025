@@ -11,7 +11,7 @@ public class Game
 
     public Map Map { get; }
 
-    public Coord PlayerPosition { get; set; } = new(0, 0);
+    public Player Player { get; set; } = new(new Coord(0, 0), new Swoq.Interface.Inventory());
 
     public int ViewDistance { get; }
 
