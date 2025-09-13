@@ -5,11 +5,12 @@ public class MapExplorer : IObjective
     private readonly Map map;
     private readonly Player player;
     private readonly Router router;
+    private readonly UnknownTileFilter unknownTileFilter;
     private Coord? target;
     private List<Coord> targetPath = [];
     
 
-    public bool IsCompleted => GetUnknownTiles().Count == 0;
+    public bool IsCompleted => unknownTileFilter.GetUnknownTiles(player.Position).Count == 0;
 
     public bool CanBeSolved => !IsCompleted;
 
@@ -23,6 +24,7 @@ public class MapExplorer : IObjective
         this.player = player;
         router = new Router(map);
         target = null;
+        unknownTileFilter = new UnknownTileFilter(map);
     }
 
     public bool TryGetNextTarget(out Coord nextTarget)
@@ -48,7 +50,7 @@ public class MapExplorer : IObjective
             return true;
         }
 
-        var tiles = GetUnknownTiles();
+        var tiles = unknownTileFilter.GetUnknownTiles(player.Position);
         if (tiles.Count != 0)
         {
             target = tiles.First();
@@ -84,51 +86,4 @@ public class MapExplorer : IObjective
         return false;
     }
 
-    private List<Coord> GetUnknownTiles()
-    {
-        var tiles = new List<Coord>();
-        for (int y = 0; y < map.Height; ++y)
-        {
-            for (int x = 0; x < map.Width; ++x)
-            {
-                Coord pos = new(x, y);
-                if (map[x, y].Type == Swoq.Interface.Tile.Unknown && NeighborHasType(pos, Swoq.Interface.Tile.Empty))
-                {
-                    tiles.Add(pos);
-                }
-            }
-        }
-
-        tiles.Sort((a, b) =>
-        {
-            int distA = a.ManhattanDistance(player.Position);
-            int distB = b.ManhattanDistance(player.Position);
-            return distA.CompareTo(distB);
-        });
-
-        tiles = tiles.Where(i => router.FindPath(player.Position, i).Count > 0).ToList();
-
-        return tiles;
-    }
-
-    private bool NeighborHasType(Coord pos, Swoq.Interface.Tile type)
-    {
-        if (pos.Y + 1 < map.Height && map[pos.X, pos.Y + 1].Type == type)
-        {
-            return true;
-        }
-        if (pos.X + 1 < map.Width && map[pos.X + 1, pos.Y].Type == type)
-        {
-            return true;
-        }
-        if (pos.Y - 1 >= 0 && map[pos.X, pos.Y - 1].Type == type)
-        {
-            return true;
-        }
-        if (pos.X - 1 >= 0 && map[pos.X - 1, pos.Y].Type == type)
-        {
-            return true;
-        }
-        return false;
-    }
 }
