@@ -76,7 +76,10 @@ public class Router
 
     private bool IsBlocked(int x, int y)
     {
-        var type = _map[x, y].Type;
-        return type == Swoq.Interface.Tile.Wall || type == Swoq.Interface.Tile.Exit || type == Swoq.Interface.Tile.Player;
+        var type = _map[new Coord(x, y)].Type;
+        return
+            type == Swoq.Interface.Tile.Wall || type == Swoq.Interface.Tile.Exit ||
+            type == Swoq.Interface.Tile.Player || type == Swoq.Interface.Tile.DoorBlue ||
+            type == Swoq.Interface.Tile.DoorGreen || type == Swoq.Interface.Tile.DoorRed;
     }
 }
