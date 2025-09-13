@@ -94,7 +94,7 @@ public sealed class ExitFinder
         Assert.AreEqual(1, next.Y);
         game.Player.Position = next;
 
-        map[3, 1].Type = TileType.Player;
+        map[2, 1].Type = TileType.Player;
 
         Assert.IsTrue(finder.IsCompleted);
         Assert.IsTrue(finder.HasToBeSolved);
