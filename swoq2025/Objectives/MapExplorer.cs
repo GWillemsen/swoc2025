@@ -2,6 +2,8 @@ namespace swoq2025.Objectives;
 
 public class MapExplorer : IObjective
 {
+    private readonly Queue<Coord> recentTargets = new();
+    private const int RecentTargetHistoryLength = 5;
     private readonly Map map;
     private readonly Player player;
     private readonly Router router;
@@ -31,9 +33,9 @@ public class MapExplorer : IObjective
     {
         nextTarget = new(0, 0);
         use = false;
-        if (target.HasValue)
+        if (target.HasValue && targetPath.Count != 0)
         {
-            if (!player.Position.IsNeighbor(target.Value))
+            if (!player.Position.IsNeighbor(targetPath[0]))
             {
                 targetPath = [];
             }
@@ -51,10 +53,14 @@ public class MapExplorer : IObjective
             return true;
         }
 
-        var tiles = unknownTileFilter.GetUnknownTiles(player.Position);
+        var tiles = unknownTileFilter.GetUnknownTiles(player.Position)
+            .Where(t => !recentTargets.Contains(t)).ToList();
         if (tiles.Count != 0)
         {
             target = tiles.First();
+            recentTargets.Enqueue(target.Value);
+            if (recentTargets.Count > RecentTargetHistoryLength)
+                recentTargets.Dequeue();
             targetPath = router.FindPath(player.Position, target.Value);
             if (targetPath.Count > 0)
             {
@@ -79,6 +85,7 @@ public class MapExplorer : IObjective
     {
         target = null;
         targetPath = [];
+        recentTargets.Clear();
     }
 
     private bool MapHasUpdatesOnPath(IEnumerable<Coord> path)
