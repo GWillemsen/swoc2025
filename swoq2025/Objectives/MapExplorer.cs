@@ -74,6 +74,12 @@ public class MapExplorer : IObjective
         }
     }
 
+    public void Reset()
+    {
+        target = null;
+        targetPath = [];
+    }
+
     private bool MapHasUpdatesOnPath(IEnumerable<Coord> path)
     {
         foreach (var coord in path)
