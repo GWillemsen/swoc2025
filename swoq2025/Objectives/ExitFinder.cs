@@ -23,9 +23,10 @@ public class ExitFinder : IObjective
         exit = null;
     }
 
-    public bool TryGetNextTarget(out Coord target)
+    public bool TryGetNextTarget(out Coord target, out bool use)
     {
         target = new(0, 0);
+        use = false;
         if (exit.HasValue)
         {
             target = exit.Value;

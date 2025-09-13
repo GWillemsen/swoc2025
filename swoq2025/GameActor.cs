@@ -49,10 +49,11 @@ public class GameActor
             .OrderBy(o => o.Priority);
 
         Coord next;
+        bool useAction = false;
         if (objectivesByPriority.Any())
         {
             var objective = objectivesByPriority.First();
-            if (!objective.TryGetNextTarget(out next))
+            if (!objective.TryGetNextTarget(out next, out useAction))
             {
                 Console.WriteLine("Objective cannot be solved");
                 return DirectedAction.None;
@@ -65,10 +66,10 @@ public class GameActor
             return DirectedAction.None;
         }
 
-        return GetDirectionToTarget(next);
+        return GetDirectionToTarget(next, useAction);
     }
 
-    private DirectedAction GetDirectionToTarget(Coord target)
+    private DirectedAction GetDirectionToTarget(Coord target, bool use)
     {
         DirectedAction action = DirectedAction.None;
         var dx = target.X - game.Player.Position.X;
@@ -76,11 +77,25 @@ public class GameActor
 
         if (Math.Abs(dx) > Math.Abs(dy))
         {
-            action = dx > 0 ? DirectedAction.MoveEast : DirectedAction.MoveWest;
+            if (dx > 0)
+            {
+                action = use ? DirectedAction.UseEast : DirectedAction.MoveEast;
+            }
+            else
+            {
+                action = use ? DirectedAction.UseWest : DirectedAction.MoveWest;
+            }
         }
         else if (dy != 0)
         {
-            action = dy > 0 ? DirectedAction.MoveSouth : DirectedAction.MoveNorth;
+            if (dy > 0)
+            {
+                action = use ? DirectedAction.UseSouth : DirectedAction.MoveSouth;
+            }
+            else
+            {
+                action = use ? DirectedAction.UseNorth : DirectedAction.MoveNorth;
+            }
         }
         return action;
     }

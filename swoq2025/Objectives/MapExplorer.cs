@@ -27,9 +27,10 @@ public class MapExplorer : IObjective
         unknownTileFilter = new UnknownTileFilter(map);
     }
 
-    public bool TryGetNextTarget(out Coord nextTarget)
+    public bool TryGetNextTarget(out Coord nextTarget, out bool use)
     {
         nextTarget = new(0, 0);
+        use = false;
         if (target.HasValue)
         {
             if (!player.Position.IsNeighbor(target.Value))

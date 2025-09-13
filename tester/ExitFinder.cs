@@ -29,7 +29,7 @@ public sealed class ExitFinder
         map[2, 2].Type = TileType.Wall;
 
         swoq2025.Objectives.ExitFinder finder = new(map, game.Player);
-        Assert.IsFalse(finder.TryGetNextTarget(out Coord next));
+        Assert.IsFalse(finder.TryGetNextTarget(out Coord next, out bool use));
         Assert.IsFalse(finder.IsCompleted);
         Assert.IsTrue(finder.HasToBeSolved);
         Assert.AreEqual(1, finder.Priority);
@@ -56,7 +56,7 @@ public sealed class ExitFinder
         map[2, 2].Type = TileType.Wall;
 
         swoq2025.Objectives.ExitFinder finder = new(map, game.Player);
-        Assert.IsFalse(finder.TryGetNextTarget(out Coord next));
+        Assert.IsFalse(finder.TryGetNextTarget(out Coord next, out bool use));
         Assert.IsFalse(finder.IsCompleted);
         Assert.IsTrue(finder.HasToBeSolved);
         Assert.AreEqual(1, finder.Priority);
@@ -84,12 +84,12 @@ public sealed class ExitFinder
         map[2, 2].Type = TileType.Wall;
 
         swoq2025.Objectives.ExitFinder finder = new(map, game.Player);
-        Assert.IsTrue(finder.TryGetNextTarget(out Coord next));
+        Assert.IsTrue(finder.TryGetNextTarget(out Coord next, out bool use));
         Assert.AreEqual(1, next.X);
         Assert.AreEqual(1, next.Y);
         game.Player.Position = next;
 
-        Assert.IsTrue(finder.TryGetNextTarget(out next));
+        Assert.IsTrue(finder.TryGetNextTarget(out next, out use));
         Assert.AreEqual(2, next.X);
         Assert.AreEqual(1, next.Y);
         game.Player.Position = next;

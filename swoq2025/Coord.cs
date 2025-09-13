@@ -14,6 +14,11 @@ public struct Coord : IEquatable<Coord>
         Y = y;
     }
 
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+
     public bool Equals(Coord other)
     {
         return X == other.X && Y == other.Y;

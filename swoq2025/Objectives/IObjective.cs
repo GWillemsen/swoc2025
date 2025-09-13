@@ -10,7 +10,7 @@ public interface IObjective
 
     public bool HasToBeSolved { get; }
 
-    public bool TryGetNextTarget(out Coord target);
+    public bool TryGetNextTarget(out Coord target, out bool use);
 
     public void Reset();
 }
