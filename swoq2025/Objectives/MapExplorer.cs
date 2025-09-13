@@ -1,17 +1,26 @@
-namespace swoq2025;
+namespace swoq2025.Objectives;
 
-public class MapExplorer
+public class MapExplorer : IObjective
 {
     private readonly Map map;
-    private readonly Game game;
+    private readonly Player player;
     private readonly Router router;
     private Coord? target;
     private List<Coord> targetPath = [];
+    
 
-    public MapExplorer(Map map, Game game)
+    public bool IsCompleted => GetUnknownTiles().Count == 0;
+
+    public bool CanBeSolved => !IsCompleted;
+
+    public bool HasToBeSolved => false;
+
+    public int Priority => 0; // Lowest priority
+
+    public MapExplorer(Map map, Player player)
     {
         this.map = map;
-        this.game = game;
+        this.player = player;
         router = new Router(map);
         target = null;
     }
@@ -21,7 +30,7 @@ public class MapExplorer
         nextTarget = new(0, 0);
         if (target.HasValue)
         {
-            if (!game.Player.Position.IsNeighbor(target.Value))
+            if (!player.Position.IsNeighbor(target.Value))
             {
                 targetPath = [];
             }
@@ -43,7 +52,7 @@ public class MapExplorer
         if (tiles.Count != 0)
         {
             target = tiles.First();
-            targetPath = router.FindPath(game.Player.Position, target.Value);
+            targetPath = router.FindPath(player.Position, target.Value);
             if (targetPath.Count > 0)
             {
                 nextTarget = targetPath[0];
@@ -92,10 +101,12 @@ public class MapExplorer
 
         tiles.Sort((a, b) =>
         {
-            int distA = a.ManhattanDistance(game.Player.Position);
-            int distB = b.ManhattanDistance(game.Player.Position);
+            int distA = a.ManhattanDistance(player.Position);
+            int distB = b.ManhattanDistance(player.Position);
             return distA.CompareTo(distB);
         });
+
+        tiles = tiles.Where(i => router.FindPath(player.Position, i).Count > 0).ToList();
 
         return tiles;
     }
